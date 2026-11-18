@@ -1,0 +1,77 @@
+﻿<Window x:Class="AntSimulator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Симулятор Муравья (Настраиваемый)" Height="800" Width="1200"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="350"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Игровое поле -->
+        <Border Grid.Column="0" Background="#F5F5F5" BorderBrush="Gray" BorderThickness="0,0,1,0">
+            <Viewbox Stretch="Uniform" Margin="20">
+                <Canvas x:Name="GameCanvas" Background="White" ClipToBounds="True"/>
+            </Viewbox>
+        </Border>
+
+        <!-- Панель настроек -->
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="15">
+
+                <!-- Размер поля -->
+                <GroupBox Header="Размер игрового поля" Margin="0,0,0,15">
+                    <StackPanel>
+                        <TextBlock Text="Ширина (5-100):"/>
+                        <TextBox x:Name="TxtWidth" Text="40" Margin="0,5"/>
+                        <TextBlock Text="Высота (5-100):"/>
+                        <TextBox x:Name="TxtHeight" Text="40" Margin="0,5"/>
+                        <Button Content="Пересоздать поле" Click="BtnResize_Click" Margin="0,5"/>
+                    </StackPanel>
+                </GroupBox>
+
+                <!-- Правила для черной клетки -->
+                <GroupBox Header="Правила для черной клетки" Margin="0,0,0,15">
+                    <StackPanel>
+                        <ComboBox x:Name="CmbBlackRules" Margin="0,5">
+                            <ComboBoxItem Content="Повернуть налево"/>
+                            <ComboBoxItem Content="Повернуть направо"/>
+                            <ComboBoxItem Content="Идти прямо"/>
+                            <ComboBoxItem Content="Перекрасить клетку"/>
+                        </ComboBox>
+                        <Button Content="Добавить" Click="BtnAddBlackRule_Click" Margin="0,5"/>
+                        <ListBox x:Name="LstBlackRules" Height="100" Margin="0,5"/>
+                        <Button Content="Удалить" Click="BtnRemoveBlackRule_Click" Margin="0,5"/>
+                    </StackPanel>
+                </GroupBox>
+
+                <!-- Правила для белой клетки -->
+                <GroupBox Header="Правила для белой клетки" Margin="0,0,0,15">
+                    <StackPanel>
+                        <ComboBox x:Name="CmbWhiteRules" Margin="0,5">
+                            <ComboBoxItem Content="Повернуть налево"/>
+                            <ComboBoxItem Content="Повернуть направо"/>
+                            <ComboBoxItem Content="Идти прямо"/>
+                            <ComboBoxItem Content="Перекрасить клетку"/>
+                        </ComboBox>
+                        <Button Content="Добавить" Click="BtnAddWhiteRule_Click" Margin="0,5"/>
+                        <ListBox x:Name="LstWhiteRules" Height="100" Margin="0,5"/>
+                        <Button Content="Удалить" Click="BtnRemoveWhiteRule_Click" Margin="0,5"/>
+                    </StackPanel>
+                </GroupBox>
+
+                <!-- Управление -->
+                <GroupBox Header="Управление">
+                    <StackPanel>
+                        <Button x:Name="BtnStart" Content="Запустить" Height="40" Margin="0,5" Click="BtnStart_Click" Background="LightGreen"/>
+                        <Button x:Name="BtnPause" Content="Пауза" Height="40" Margin="0,5" Click="BtnPause_Click" IsEnabled="False"/>
+                        <Button x:Name="BtnReset" Content="Сброс" Height="40" Margin="0,5" Click="BtnReset_Click" Background="LightCoral"/>
+                        <TextBlock x:Name="LblStatus" Text="Статус: Остановлен" Margin="0,10,0,0" FontWeight="Bold"/>
+                    </StackPanel>
+                </GroupBox>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
