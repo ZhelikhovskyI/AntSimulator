@@ -339,7 +339,7 @@ namespace AntSimulator
             ResetGame();
         }
     }
-
+    // Логика муравья: повороты и движение вперед
     public class Ant
     {
         public int X { get; set; }
