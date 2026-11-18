@@ -14,25 +14,22 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
+
 namespace AntSimulator
 {
     public partial class MainWindow : Window
     {
-        // --- НАСТРОЙКИ ПОЛЯ ---
         private int gridWidth = 40;
         private int gridHeight = 40;
         private const int cellSize = 15;
 
-        // --- ДАННЫЕ ИГРЫ ---
-        private bool[,] grid;            // true = черная, false = белая
-        private Ant ant;                 // Наш муравей
-        private DispatcherTimer timer;   // Таймер для шагов
+        private bool[,] grid;
+        private Ant ant;
+        private DispatcherTimer timer;
 
-        // --- ВИЗУАЛИЗАЦИЯ ---
-        private Rectangle[,] cellRects;  // Квадратики на экране
-        private Ellipse antEllipse;      // Кружок муравья
+        private Rectangle[,] cellRects;
+        private Ellipse antEllipse;
 
-        // --- ПРАВИЛА ---
         private List<string> blackRules = new List<string>();
         private List<string> whiteRules = new List<string>();
 
@@ -44,23 +41,20 @@ namespace AntSimulator
 
         private void InitializeGame()
         {
-            // 1. Настраиваем таймер
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(100);
-            timer.Tick += Timer_Tick; // Подписываемся на событие
+            timer.Tick += Timer_Tick;
 
-            // 2. Правила по умолчанию (как у Ленгтона)
             whiteRules.Add("Повернуть направо");
             whiteRules.Add("Перекрасить клетку");
-            
+
             blackRules.Add("Повернуть налево");
             blackRules.Add("Перекрасить клетку");
 
-            UpdateRulesUI(); 
+            UpdateRulesUI();
             CreateGrid(gridWidth, gridHeight);
         }
 
-        // Этот метод вызывается таймером
         private void Timer_Tick(object sender, EventArgs e)
         {
             MoveAnt();
@@ -70,9 +64,9 @@ namespace AntSimulator
         {
             gridWidth = w;
             gridHeight = h;
-            
+
             GameCanvas.Children.Clear();
-            
+
             grid = new bool[gridWidth, gridHeight];
             cellRects = new Rectangle[gridWidth, gridHeight];
 
@@ -89,10 +83,10 @@ namespace AntSimulator
                     rect.Stroke = Brushes.LightGray;
                     rect.StrokeThickness = 0.5;
                     rect.Fill = Brushes.White;
-                    
+
                     Canvas.SetLeft(rect, x * cellSize);
                     Canvas.SetTop(rect, y * cellSize);
-                    
+
                     GameCanvas.Children.Add(rect);
                     cellRects[x, y] = rect;
                 }
@@ -133,7 +127,6 @@ namespace AntSimulator
             int y = ant.Y;
             bool isBlack = grid[x, y];
 
-            // Выбираем список правил в зависимости от цвета
             List<string> currentRules;
             if (isBlack == true)
             {
@@ -144,16 +137,13 @@ namespace AntSimulator
                 currentRules = whiteRules;
             }
 
-            // Если правил нет - ничего не делаем
             if (currentRules.Count == 0)
             {
-                return; 
+                return;
             }
 
-            // Берем самое первое правило
             string action = currentRules[0];
 
-            // Выполняем его
             if (action == "Повернуть налево")
             {
                 ant.TurnLeft();
@@ -182,16 +172,12 @@ namespace AntSimulator
                     cellRects[x, y].Fill = Brushes.White;
                 }
             }
-            // Если action == "Идти прямо", то мы просто ничего не делаем
 
-            // Прокручиваем правило: удаляем первое и добавляем в конец
             currentRules.RemoveAt(0);
             currentRules.Add(action);
 
-            // Делаем шаг
             ant.MoveForward();
 
-            // Проверяем границы (телепортация)
             if (ant.X < 0)
             {
                 ant.X = gridWidth - 1;
@@ -218,14 +204,11 @@ namespace AntSimulator
             Canvas.SetTop(antEllipse, ant.Y * cellSize + 2);
         }
 
-        // === КНОПКИ ===
-
         private void BtnResize_Click(object sender, RoutedEventArgs e)
         {
             int w;
             int h;
 
-            // Пытаемся перевести текст в числа
             if (int.TryParse(TxtWidth.Text, out w) == false)
             {
                 MessageBox.Show("Введите целое число для ширины.");
@@ -237,23 +220,10 @@ namespace AntSimulator
                 return;
             }
 
-            // Ограничиваем размеры
-            if (w < 5) 
-            { 
-                w = 5; 
-            }
-            if (w > 100) 
-            { 
-                w = 100; 
-            }
-            if (h < 5) 
-            { 
-                h = 5; 
-            }
-            if (h > 100) 
-            { 
-                h = 100; 
-            }
+            if (w < 5) { w = 5; }
+            if (w > 100) { w = 100; }
+            if (h < 5) { h = 5; }
+            if (h > 100) { h = 100; }
 
             TxtWidth.Text = w.ToString();
             TxtHeight.Text = h.ToString();
@@ -307,7 +277,7 @@ namespace AntSimulator
         {
             LstBlackRules.ItemsSource = null;
             LstBlackRules.ItemsSource = blackRules;
-            
+
             LstWhiteRules.ItemsSource = null;
             LstWhiteRules.ItemsSource = whiteRules;
         }
@@ -339,7 +309,7 @@ namespace AntSimulator
             ResetGame();
         }
     }
-    // Логика муравья: повороты и движение вперед
+
     public class Ant
     {
         public int X { get; set; }
@@ -355,62 +325,26 @@ namespace AntSimulator
 
         public void TurnRight()
         {
-            if (Facing == Direction.Up) 
-            { 
-                Facing = Direction.Right; 
-            }
-            else if (Facing == Direction.Right) 
-            { 
-                Facing = Direction.Down; 
-            }
-            else if (Facing == Direction.Down) 
-            { 
-                Facing = Direction.Left; 
-            }
-            else if (Facing == Direction.Left) 
-            { 
-                Facing = Direction.Up; 
-            }
+            if (Facing == Direction.Up) { Facing = Direction.Right; }
+            else if (Facing == Direction.Right) { Facing = Direction.Down; }
+            else if (Facing == Direction.Down) { Facing = Direction.Left; }
+            else if (Facing == Direction.Left) { Facing = Direction.Up; }
         }
 
         public void TurnLeft()
         {
-            if (Facing == Direction.Up) 
-            { 
-                Facing = Direction.Left; 
-            }
-            else if (Facing == Direction.Left) 
-            { 
-                Facing = Direction.Down; 
-            }
-            else if (Facing == Direction.Down) 
-            { 
-                Facing = Direction.Right; 
-            }
-            else if (Facing == Direction.Right) 
-            { 
-                Facing = Direction.Up; 
-            }
+            if (Facing == Direction.Up) { Facing = Direction.Left; }
+            else if (Facing == Direction.Left) { Facing = Direction.Down; }
+            else if (Facing == Direction.Down) { Facing = Direction.Right; }
+            else if (Facing == Direction.Right) { Facing = Direction.Up; }
         }
 
         public void MoveForward()
         {
-            if (Facing == Direction.Up) 
-            { 
-                Y = Y - 1; 
-            }
-            else if (Facing == Direction.Right) 
-            { 
-                X = X + 1; 
-            }
-            else if (Facing == Direction.Down) 
-            { 
-                Y = Y + 1; 
-            }
-            else if (Facing == Direction.Left) 
-            { 
-                X = X - 1; 
-            }
+            if (Facing == Direction.Up) { Y = Y - 1; }
+            else if (Facing == Direction.Right) { X = X + 1; }
+            else if (Facing == Direction.Down) { Y = Y + 1; }
+            else if (Facing == Direction.Left) { X = X - 1; }
         }
     }
 
